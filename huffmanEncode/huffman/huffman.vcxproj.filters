@@ -26,7 +26,7 @@
     <ClInclude Include="huffmanEncode.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Heap.h">
+    <ClInclude Include="heap.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
