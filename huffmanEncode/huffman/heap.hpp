@@ -46,7 +46,7 @@ public:
             size_t nParent = parent(loc);
             if (_cmp(src[loc], src[nParent]))
             {
-                //½»»»
+                swap(src[loc], src[nParent]);
                 loc = nParent;
                 continue;
             }
