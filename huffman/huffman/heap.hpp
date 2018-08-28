@@ -22,11 +22,9 @@ using namespace std;
      return lt >= rt;
  }
 
-template<typename T, CmpType cmpType>
+template<typename T>
 class LLHeap
 {
-
-
     
 public:
     bool(*_cmp)(T, T);
@@ -42,6 +40,11 @@ public:
         for(;;)
         {
             size_t nParent = parent(loc);
+
+            if(0 == nParent)
+            {
+                break;
+            }
             if (_cmp(src[loc], src[nParent]))
             {
                 swap(src[loc], src[nParent]);
@@ -73,11 +76,12 @@ public:
     // move the maximum or minimum element to last
     void pop_back() 
     {
-        int source[10];
-        
+        if(1 == _len)
+        {
+            return;
+        }        
 
         swap(_src[0], _src[_len-1]);
-        memcpy(source, _src, 40);
         --_len;
 
         size_t parentloc = 0, targetloc = 0;
@@ -107,7 +111,6 @@ public:
             if (_cmp(_src[targetloc], _src[parentloc]))
             {
                 swap(_src[parentloc], _src[targetloc]);
-                memcpy(source, _src, 40);
                 
             }
             else
@@ -118,9 +121,17 @@ public:
         
 
     }
-    void push_back()
+    void push_back(T& element)
     {
+        _src[_len] = element;
+        adjust(_src, _len);
+        ++_len;
+    }
 
+    T getExtremum()
+    {
+        pop_back();
+        return T[_len];
     }
 private:
     T* _src;
@@ -130,4 +141,3 @@ private:
 
 
 #endif // !_HEAP_H_
-

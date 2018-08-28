@@ -3,6 +3,7 @@
 #define HUFFMANENCODE_H
 
 #include "llctype.h"
+#include "heap.hpp"
 
 class huffmanEncode
 {
@@ -15,20 +16,22 @@ private:
 
     struct TreeNode
     {
+    	size_t freq;
         TreeNode* parent;
         int bValue;
-    };
-
-    struct Freq
-    {
-    	size_t freq;
     	u8 charValue;
     };
-	Freq _afrequency[UCHAR_MAX];
+
+    std::vector<TreeNode> _bTree(UCHAR_MAX);
+    int _aIndex[UCHAR_MAX];
+
 public:
+
 	huffmanEncode();
 	~huffmanEncode();
 	void calcuFre(u8 *src, size_t len);
+	void createTree();
+	void createTable();
 };
 
 #endif
