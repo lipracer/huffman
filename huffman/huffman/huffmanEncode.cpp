@@ -8,10 +8,12 @@ huffmanEncode::huffmanEncode()
 
 huffmanEncode::~huffmanEncode()
 {
+
 }
-void huffmanEncode::calcuFre(unsigned char *src, sizeType len)
+
+void huffmanEncode::calcuFre(u8 *src, size_t len)
 {
-	for (sizeType i = 0; i < len; ++i)
+	for (size_t i = 0; i < len; ++i)
 	{
 		++_afrequency[*src++];
 	}
