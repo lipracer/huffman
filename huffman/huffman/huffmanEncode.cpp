@@ -1,5 +1,14 @@
 #include "huffmanEncode.h"
 
+ bool compare1(TreeNode *lt, TreeNode *rt)
+ {
+     return lt->freq < rt->freq;
+ }
+ bool compare2(TreeNode *lt, TreeNode *rt)
+ {
+     return lt->freq >= rt->freq;
+ }
+
 
 huffmanEncode::huffmanEncode()
 {
@@ -16,7 +25,7 @@ void huffmanEncode::calcuFre(u8 *src, size_t len)
 {
 	for (size_t i = 0; i < UCHAR_MAX; ++i)
 	{
-		_aIndex[UCHAR_MAX] = i;
+		_apNode[i] = _bTree+i;
 	}
 
 	for (size_t i = 0; i < len; ++i)
@@ -29,7 +38,7 @@ void huffmanEncode::calcuFre(u8 *src, size_t len)
 
 void huffmanEncode::createTree()
 {
-	LLHeap<int> mheap(_aIndex, UCHAR_MAX);
+	LLHeap<TreeNode*> mheap(_apNode, UCHAR_MAX);
 
 	int min1 = -1, min2 = -1;
 

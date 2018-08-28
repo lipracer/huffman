@@ -13,15 +13,6 @@ using namespace std;
     less,
 };
 
- bool compare1(int lt, int rt)
- {
-     return lt < rt;
- }
- bool compare2(int lt, int rt)
- {
-     return lt >= rt;
- }
-
 template<typename T>
 class LLHeap
 {
