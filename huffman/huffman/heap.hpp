@@ -78,6 +78,7 @@ public:
     {
         if(1 == _len)
         {
+            --_len;
             return;
         }        
 
@@ -128,8 +129,17 @@ public:
         ++_len;
     }
 
+    size_t size()
+    {
+        return _len;
+    }
+
     T getExtremum()
     {
+        if(0 == _len)
+        {
+            throw 0;
+        }
         pop_back();
         return T[_len];
     }

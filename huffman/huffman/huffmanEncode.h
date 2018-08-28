@@ -23,7 +23,8 @@ private:
     };
 
     std::vector<TreeNode> _bTree(UCHAR_MAX);
-    int _aIndex[UCHAR_MAX];
+    int _aIndex[UCHAR_MAX];//the source freq index array will sort
+    u32 _htable[UCHAR_MAX];//huffman encode table
 
 public:
 

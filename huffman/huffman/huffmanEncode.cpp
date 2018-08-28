@@ -31,21 +31,38 @@ void huffmanEncode::createTree()
 {
 	LLHeap<int> mheap(_aIndex, UCHAR_MAX);
 
-	int min1 = mheap.getExtremum();
-	int min2 = mheap.getExtremum();
+	int min1 = -1, min2 = -1;
 
-	_bTree[min1].bValue = 0;
-	_bTree[min2].bValue = 1;
 
-	TreeNode node;
-	node.freq = _bTree[min1].freq + _bTree[min2].freq;
 
-	_bTree.push_back(node);
+	for(;;)
+	{
 
-	_bTree[min1].parent = _bTree.size() - 1;
-	_bTree[min2].parent = _bTree.size() - 1;
+		do{
+			min1 = mheap.getExtremum();
+		}
+		while(0 == _bTree[min1].freq);//怎么去掉这个判断？？？？？？？？？
 
-	mheap.push_back(_bTree.size() - 1);
+		min2 = mheap.getExtremum();
+
+		_bTree[min1].bValue = 0;
+		_bTree[min2].bValue = 1;
+
+		TreeNode node;
+		node.freq = _bTree[min1].freq + _bTree[min2].freq;
+
+		_bTree.push_back(node);
+
+		_bTree[min1].parent = _bTree.size() - 1;
+		_bTree[min2].parent = _bTree.size() - 1;
+
+		if(0 == mheap.size())
+		{
+			break;
+		}
+
+		mheap.push_back(_bTree.size() - 1);
+	}
 
 
 }
