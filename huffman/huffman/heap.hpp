@@ -32,14 +32,6 @@ public:
     bool(*_cmp)(T, T);
     LLHeap(T* src, size_t len):_src(src), _len(len)
     {
-        //if (cmpType)
-        //{
-        //    _cmp = compare2;
-        //}
-        //else
-        //{
-        //    _cmp = compare1;
-        //}
         _cmp = compare1;
         make_heap();
     }

@@ -15,13 +15,16 @@ private:
 
     struct TreeNode
     {
-        //TreeNode* lchrd;
-        //TreeNode* rchrd;
         TreeNode* parent;
-        //char value;
         int bValue;
     };
-	size_t _afrequency[UCHAR_MAX];
+
+    struct Freq
+    {
+    	size_t freq;
+    	u8 charValue;
+    };
+	Freq _afrequency[UCHAR_MAX];
 public:
 	huffmanEncode();
 	~huffmanEncode();

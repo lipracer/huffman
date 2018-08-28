@@ -15,6 +15,7 @@ void huffmanEncode::calcuFre(u8 *src, size_t len)
 {
 	for (size_t i = 0; i < len; ++i)
 	{
+		_afrequency[*src].chrValue = *src;
 		++_afrequency[*src++];
 	}
 }
