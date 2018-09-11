@@ -33,7 +33,7 @@ void huffmanEncode::createTree()
 {
     int validPos = 256;
     
-    LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, UCHAR_MAX);
+    LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, MUCHAR_MAX);
     
     for (; ; )
     {

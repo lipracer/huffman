@@ -11,6 +11,7 @@
 #include <memory>
 #include <sstream>
 #include "heap.hpp"
+#include "huffmanEncode.h"
 
 #define ALENGTH 1000
 #define mrand(x) (rand()%(x))
@@ -61,5 +62,8 @@ int main(int argc, const char * argv[]) {
     }
     
     delete src;
+
+    huffmanEncode he;
+
     return 0;
 }

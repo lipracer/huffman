@@ -1,4 +1,5 @@
 #ifndef _HEAP_HPP_
+#define _HEAP_HPP_
 
 #include <algorithm> 
 
@@ -7,12 +8,6 @@
 #define rchrd(n) ((2*n)+2)
 
 using namespace std;
-
-enum class CmpType : int
-{
-    less,
-};
-
 
 
 template<typename T, typename CMP>

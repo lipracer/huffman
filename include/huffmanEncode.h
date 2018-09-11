@@ -35,7 +35,7 @@ class huffmanEncode
 {
 	enum valueEnum
 	{
-		UCHAR_MAX = 255,
+		MUCHAR_MAX = 255,
         NodeCount = (256+1)*256/2
 	};
 
