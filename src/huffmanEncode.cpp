@@ -6,7 +6,7 @@
 huffmanEncode::huffmanEncode()
 {
     memset(m_node, 0, sizeof(m_node));
-    for (int i = 0; i < UCHAR_MAX; ++i)
+    for (int i = 0; i < 256; ++i)
     {
         m_pnode[i] =  m_node + i;
     }
@@ -31,7 +31,32 @@ void huffmanEncode::calcuFre(u8 *src, size_t len)
 
 void huffmanEncode::createTree()
 {
-    LLHeap<TreeNode, compare1<TreeNode>> heap((TreeNode*)m_pnode, UCHAR_MAX);
-    heap.pop_back();
-
+    int validPos = 256;
+    
+    LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, UCHAR_MAX);
+    
+    for (; ; )
+    {
+        mheap.pop_back();
+        mheap.pop_back();
+        
+        TreeNode& lnode = m_node[mheap.size()+1];
+        TreeNode& rnode = m_node[mheap.size()];
+        
+        lnode.bValue = 0;
+        rnode.bValue = 1;
+        lnode.parent = m_node + validPos;
+        rnode.parent = m_node + validPos;
+        m_node[validPos].freq = lnode.freq + rnode.freq;
+        
+        TreeNode* nNode = m_node + validPos;
+        mheap.push_back(nNode);
+        
+        ++validPos;
+        
+        if(mheap.size() < 2)
+        {
+            break;
+        }
+    }
 }

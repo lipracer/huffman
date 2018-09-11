@@ -16,18 +16,18 @@ struct TreeNode
 template<typename T>
 struct compare1
 {
-    bool operator()(T& lt, T& rt)
+    bool operator()(T lt, T rt)
     {
-        return lt.freq < rt.freq;
+        return lt->freq < rt->freq;
     }
 };
 
 template<typename T>
 struct compare2
 {
-    bool operator()(T& lt, T& rt)
+    bool operator()(T lt, T rt)
     {
-        return lt.freq >= rt.freq;
+        return lt->freq >= rt->freq;
     }
 };
 

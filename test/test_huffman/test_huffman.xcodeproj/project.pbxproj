@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A22DC38B2147B8CC003F84AE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A22DC38A2147B8CC003F84AE /* main.cpp */; };
+		A22DC3922147D8DC003F84AE /* huffmanEncode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A22DC3912147D8DB003F84AE /* huffmanEncode.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		A22DC3872147B8CC003F84AE /* test_huffman */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_huffman; sourceTree = BUILT_PRODUCTS_DIR; };
 		A22DC38A2147B8CC003F84AE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		A22DC3912147D8DB003F84AE /* huffmanEncode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = huffmanEncode.cpp; path = ../../../src/huffmanEncode.cpp; sourceTree = "<group>"; };
+		A22DC3932147DE7F003F84AE /* huffmanEncode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = huffmanEncode.h; path = ../../../include/huffmanEncode.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +60,8 @@
 		A22DC3892147B8CC003F84AE /* test_huffman */ = {
 			isa = PBXGroup;
 			children = (
+				A22DC3932147DE7F003F84AE /* huffmanEncode.h */,
+				A22DC3912147D8DB003F84AE /* huffmanEncode.cpp */,
 				A22DC38A2147B8CC003F84AE /* main.cpp */,
 			);
 			path = test_huffman;
@@ -119,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A22DC38B2147B8CC003F84AE /* main.cpp in Sources */,
+				A22DC3922147D8DC003F84AE /* huffmanEncode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
