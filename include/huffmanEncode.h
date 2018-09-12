@@ -5,6 +5,8 @@
 #include "llctype.h"
 #include "heap.hpp"
 
+typedef unsigned int CodeVale;
+
 struct TreeNode
 {
 	size_t freq;
@@ -39,9 +41,17 @@ class huffmanEncode
         NodeCount = (256+1)*256/2
 	};
 
+    struct TableElment 
+    {
+        CodeVale vale;
+        int valueLen;
+    };
+
 private:
     TreeNode m_node[NodeCount];
     TreeNode* m_pnode[NodeCount];
+
+    TableElment m_table[256];
 
 
 public:
@@ -49,8 +59,8 @@ public:
 	huffmanEncode();
 	~huffmanEncode();
 	void calcuFre(u8 *src, size_t len);
-	void createTree();
-	void createTable();
+	int createTree();
+	int createTable();
 };
 
 #endif

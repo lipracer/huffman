@@ -1,11 +1,9 @@
 #include "huffmanEncode.h"
 
-
-
-
 huffmanEncode::huffmanEncode()
 {
     memset(m_node, 0, sizeof(m_node));
+    memset(m_table, 0, sizeof(m_table));
     for (int i = 0; i < 256; ++i)
     {
         m_pnode[i] =  m_node + i;
@@ -28,13 +26,24 @@ void huffmanEncode::calcuFre(u8 *src, size_t len)
     }
 }
 
-
-void huffmanEncode::createTree()
+int huffmanEncode::createTree()
 {
     int validPos = 256;
     
     LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, MUCHAR_MAX);
-    
+
+    TreeNode* firstNoZero = nullptr;
+    do
+    {
+        firstNoZero = mheap.getExtremum();
+        if (!mheap.size())
+        {
+            return -1;
+        }
+    } 
+    while (!firstNoZero->freq);
+    mheap.push_back(firstNoZero);
+
     for (; ; )
     {
         mheap.pop_back();
@@ -59,4 +68,28 @@ void huffmanEncode::createTree()
             break;
         }
     }
+}
+
+int huffmanEncode::createTable() 
+{
+    TreeNode *pCurNode = nullptr;
+    
+    for (size_t i = 0; i < 256; i++)
+    {
+        pCurNode = m_node + i;
+        if (!pCurNode->parent)
+        {
+            continue;
+        }
+        CodeVale codeValue = 0;
+        int curBitPos = 0;
+        do
+        {
+            codeValue = codeValue | pCurNode->bValue << curBitPos++;
+            ++m_table[i].valueLen;
+            pCurNode = pCurNode->parent;
+        } while (!pCurNode);
+
+    }
+    return 0;
 }
