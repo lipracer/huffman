@@ -28,6 +28,8 @@
 		A22DC38A2147B8CC003F84AE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A22DC3912147D8DB003F84AE /* huffmanEncode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = huffmanEncode.cpp; path = ../../../src/huffmanEncode.cpp; sourceTree = "<group>"; };
 		A22DC3932147DE7F003F84AE /* huffmanEncode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = huffmanEncode.h; path = ../../../include/huffmanEncode.h; sourceTree = "<group>"; };
+		A22DC3942148DF20003F84AE /* bit_tool.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = bit_tool.hpp; path = ../../../include/bit_tool.hpp; sourceTree = "<group>"; };
+		A22DC3952148E5A2003F84AE /* test_heap.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = test_heap.hpp; path = ../../../include/test_heap.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,8 +62,10 @@
 		A22DC3892147B8CC003F84AE /* test_huffman */ = {
 			isa = PBXGroup;
 			children = (
+				A22DC3942148DF20003F84AE /* bit_tool.hpp */,
 				A22DC3932147DE7F003F84AE /* huffmanEncode.h */,
 				A22DC3912147D8DB003F84AE /* huffmanEncode.cpp */,
+				A22DC3952148E5A2003F84AE /* test_heap.hpp */,
 				A22DC38A2147B8CC003F84AE /* main.cpp */,
 			);
 			path = test_huffman;

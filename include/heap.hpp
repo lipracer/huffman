@@ -1,7 +1,8 @@
 #ifndef _HEAP_HPP_
 #define _HEAP_HPP_
 
-#include <algorithm> 
+#include <algorithm>
+#include <iostream>
 
 #define parent(n) ((n-1)/2)
 #define lchrd(n) ((2*n)+1)
