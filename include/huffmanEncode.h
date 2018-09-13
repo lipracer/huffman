@@ -9,7 +9,7 @@ typedef unsigned int CodeVale;
 
 struct TreeNode
 {
-	size_t freq;
+	u32 freq;
     TreeNode* parent;
     int bValue;
 	u8 charValue;
@@ -44,7 +44,7 @@ class huffmanEncode
     struct TableElment 
     {
         CodeVale vale;
-        int valueLen;
+        u8 valueLen;
     };
 
 private:
@@ -58,7 +58,7 @@ public:
 
 	huffmanEncode();
 	~huffmanEncode();
-	void calcuFre(u8 *src, size_t len);
+	void calcuFre(u8 *src, u8 len);
 	int createTree();
 	int createTable();
 };

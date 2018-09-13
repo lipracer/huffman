@@ -16,7 +16,7 @@ huffmanEncode::~huffmanEncode()
 
 }
 
-void huffmanEncode::calcuFre(u8 *src, size_t len)
+void huffmanEncode::calcuFre(u8 *src, u8 len)
 {
     u8 *end = src + len;
     
@@ -28,7 +28,7 @@ void huffmanEncode::calcuFre(u8 *src, size_t len)
 
 int huffmanEncode::createTree()
 {
-    int validPos = 256;
+    u8 validPos = 256;
     
     LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, MUCHAR_MAX);
 
@@ -68,13 +68,14 @@ int huffmanEncode::createTree()
             break;
         }
     }
+    return 0;
 }
 
 int huffmanEncode::createTable() 
 {
     TreeNode *pCurNode = nullptr;
     
-    for (size_t i = 0; i < 256; i++)
+    for (u8 i = 0; i < 256; i++)
     {
         pCurNode = m_node + i;
         if (!pCurNode->parent)
@@ -82,7 +83,7 @@ int huffmanEncode::createTable()
             continue;
         }
         CodeVale codeValue = 0;
-        int curBitPos = 0;
+        u8 curBitPos = 0;
         do
         {
             codeValue = codeValue | pCurNode->bValue << curBitPos++;

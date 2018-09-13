@@ -11,15 +11,15 @@
 #include <memory>
 #include <sstream>
 #include "test_heap.hpp"
+#include "huffmanEncode.h"
 
 
-
-
-
-
-int main(int argc, const char * argv[]) {
+int main()
+{
     // insert code here...
+    //test_heap();
 
-    test_heap();
+    huffmanEncode he;
+
     return 0;
 }
