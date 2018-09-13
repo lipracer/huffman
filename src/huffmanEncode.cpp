@@ -2,7 +2,7 @@
 #include <bitset>
 using namespace std;
 
-huffmanEncode::huffmanEncode(u8 *src, u32 len):m_buf(src), m_len(len)
+huffmanEncode::huffmanEncode(u8 *src, size_t len):m_buf(src), m_len(len)
 {
     memset(m_node, 0, sizeof(m_node));
     memset(m_table, 0, sizeof(m_table));
@@ -30,7 +30,7 @@ void huffmanEncode::calcuFre()
 
 int huffmanEncode::createTree()
 {
-    u32 validPos = 256;
+    int validPos = 256;
     
     LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, MUCHAR_MAX);
 
@@ -64,16 +64,18 @@ int huffmanEncode::createTree()
         m_node[validPos].freq = lnode->freq + rnode->freq;
         
         TreeNode* nNode = m_node + validPos;
+
+        if (mheap.size() == 0) 
+        {
+            break;
+        }
+
         mheap.push_back(nNode);
         lastPosHeap = mheap.size();
         //m_pnode[lastPosHeap] = nNode;
         
         ++validPos;
         
-        if(mheap.size() < 2)
-        {
-            break;
-        }
     }
     return 0;
 }

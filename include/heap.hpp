@@ -25,21 +25,20 @@ public:
     
     inline void adjust(T* src, size_t loc)
     {
-        u8 curPos = loc;
-        u8 nParent = parent(loc);
+        int curPos = loc;
+        int nParent = parent(loc);
         for(;;)
         {
             if (_cmp(src[curPos], src[nParent]))
             {
                 swap(src[curPos], src[nParent]);
                 curPos = nParent;
-                nParent = parent(nParent);
+                nParent = parent(curPos);
             
-                if(curPos <= 0)
+                if(nParent <= 0)
                 {
                     break;
                 }
-                continue;
             }
             else
             {
