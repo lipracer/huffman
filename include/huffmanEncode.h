@@ -43,24 +43,25 @@ class huffmanEncode
 
     struct TableElment 
     {
-        CodeVale vale;
-        u8 valueLen;
+        CodeVale value;
+        u32 valueLen;
     };
 
+public:
+    huffmanEncode(u8 *src, u32 len);
+    ~huffmanEncode();
+    void calcuFre();
+    int createTree();
+    int createTable();
+    void printTable();
+
 private:
+    u8* m_buf;
+    u32 m_len;
     TreeNode m_node[NodeCount];
     TreeNode* m_pnode[NodeCount];
+    TableElment m_table[256];   
 
-    TableElment m_table[256];
-
-
-public:
-
-	huffmanEncode();
-	~huffmanEncode();
-	void calcuFre(u8 *src, u8 len);
-	int createTree();
-	int createTable();
 };
 
 #endif
