@@ -5,7 +5,7 @@
 //64 platform T=long long
 //32 platform T=int
 template <typename T>
-size_t writeNBitToBuf(T* desBuf, size_t totalBit, T bits, size_t nBit)
+u64 writeNBitToBuf(T* desBuf, u64 totalBit, T bits, size_t nBit)
 {
     
     size_t nT_ = totalBit / (sizeof(T)*8);
@@ -23,7 +23,7 @@ size_t writeNBitToBuf(T* desBuf, size_t totalBit, T bits, size_t nBit)
 }
 
 template <typename T>
-T getNBitFromBuf(T* srcBuf, size_t startBit)
+T getNBitFromBuf(T* srcBuf, u64 startBit)
 {
 
     size_t nT_ = startBit / (sizeof(T)*8);

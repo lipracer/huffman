@@ -20,7 +20,13 @@
 #include "test_huffman.hpp"
 #include "huffmanEncode.h"
 
+
+#define FILE_SRC "C:\\Users\\Lerlove\\Desktop\\huffman\\test.pdf"
+#define FILE_COM "C:\\Users\\Lerlove\\Desktop\\huffman\\test_.pdf"
+#define FILE_DES "C:\\Users\\Lerlove\\Desktop\\huffman\\test__.pdf"
+
 using namespace std;
+using namespace Huffman;
 
 int main()
 {
@@ -30,10 +36,11 @@ int main()
     u8* buf = nullptr;
     int len = 0;
 
-    getTestBuf(buf, len);
+    //getTestBuf(buf, len);
+    
 
 #if true
-    fstream fin("C:\\Users\\Lerlove\\Desktop\\huffman\\Design.pdf", ios::binary | ios::in);
+    fstream fin(FILE_SRC, ios::binary | ios::in);
 
     if (fin.is_open()) 
     {
@@ -49,44 +56,14 @@ int main()
 #endif
 
 
-    huffmanEncode he(buf, len);
-    he.calcuFre();
-    he.createTree();
+        //huffmanEncode he(buf, len);
+        //he.calcuFre();
+        //he.createTree();
+        //he.createTable();
+        //he.writeToFile(FILE_COM);
+        huffmanDecodeFile(FILE_DES, FILE_COM);
 
-    try {
-        he.createTable();
-        //he.printTable();
-
-        u8 *dest = new u8[len];
-        memset(dest, 0, len);
-        size_t totalBits = he.writeCcompressData(dest);
-        
-
-        u8 *dest_origin = new u8[len];
-        memset(dest_origin, 0, len);
-        huffmanDecode((CodeVale*)dest, totalBits, he.m_table, dest_origin);
-
-        delete dest;
-
-#if true
-        fstream fout("C:\\Users\\Lerlove\\Desktop\\huffman\\Design_.pdf", ios::binary | ios::out);
-
-        if (fout.is_open())
-        {
-            fout.write((char*)dest_origin, len);
-            fout.close();
-        }
-        
-#endif
-        delete dest_origin;
-
-    }
-    catch (exception& e)
-    {
-        cout << e.what() << endl;
-    }
-
-    delete buf;
+        delete buf;
     system("pause");
     return 0;
 }
