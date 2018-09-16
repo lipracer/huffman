@@ -5,6 +5,7 @@
 //  Created by multimedia on 2018/9/11.
 //  Copyright © 2018年 ___multiMedia___. All rights reserved.
 //
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -12,11 +13,14 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <fstream>
+#include <bitset>
 
 #include "test_heap.hpp"
 #include "test_huffman.hpp"
 #include "huffmanEncode.h"
 
+using namespace std;
 
 int main()
 {
@@ -26,37 +30,63 @@ int main()
     u8* buf = nullptr;
     int len = 0;
 
-    //getTestBuf(buf, len);
+    getTestBuf(buf, len);
 
-    FILE *pf = nullptr;
+#if true
+    fstream fin("C:\\Users\\Lerlove\\Desktop\\huffman\\Design.pdf", ios::binary | ios::in);
 
-#ifndef _WINDOWS
-    errno_t err = fopen_s(&pf, "E:\\myProject\\huffman\\C++Design.pdf", "rb+");
-#else
-    pf = fopen("E:\\myProject\\huffman\\C++Design.pdf", "rb+");
-#endif // !_WINDOWS
-
-
-    if (pf) 
+    if (fin.is_open()) 
     {
-        fseek(pf, 0, SEEK_END);
-        len = ftell(pf);
-        fseek(pf, 0, SEEK_SET);
+ 
+        fin.seekg(0, ios::_Seekend);
+        len = fin.tellg();
+        fin.seekg(0, ios::_Seekbeg);
 
         buf = new u8[len];
-        fread(buf, len, 1, pf);
-        fclose(pf);
+        fin.read((char*)buf, len);
+        fin.close();
+    }
+#endif
 
 
-        huffmanEncode he(buf, len);
-        he.calcuFre();
-        he.createTree();
+    huffmanEncode he(buf, len);
+    he.calcuFre();
+    he.createTree();
+
+    try {
         he.createTable();
-        he.printTable();
+        //he.printTable();
 
-        delete buf;
+        u8 *dest = new u8[len];
+        memset(dest, 0, len);
+        size_t totalBits = he.writeCcompressData(dest);
+        
+
+        u8 *dest_origin = new u8[len];
+        memset(dest_origin, 0, len);
+        huffmanDecode((CodeVale*)dest, totalBits, he.m_table, dest_origin);
+
+        delete dest;
+
+#if true
+        fstream fout("C:\\Users\\Lerlove\\Desktop\\huffman\\Design_.pdf", ios::binary | ios::out);
+
+        if (fout.is_open())
+        {
+            fout.write((char*)dest_origin, len);
+            fout.close();
+        }
+        
+#endif
+        delete dest_origin;
+
+    }
+    catch (exception& e)
+    {
+        cout << e.what() << endl;
     }
 
+    delete buf;
     system("pause");
     return 0;
 }

@@ -35,7 +35,7 @@ public:
                 curPos = nParent;
                 nParent = parent(curPos);
             
-                if(nParent <= 0)
+                if(nParent < 0)//nParent is int so can if by less 0
                 {
                     break;
                 }

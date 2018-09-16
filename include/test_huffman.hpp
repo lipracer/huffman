@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void getTestBuf(char* &buf, int& len) 
+void getTestBuf(u8* &buf, int& len) 
 {
     vector<char> dataSource;
     for (int i = 0; i < 10; i++)
@@ -17,7 +17,7 @@ void getTestBuf(char* &buf, int& len)
     }
 
     len = dataSource.size();
-    buf = new char[len];
+    buf = new u8[len];
 
     for (int i = 0; i < len; i++)
     {

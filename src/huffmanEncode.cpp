@@ -1,5 +1,8 @@
-#include "huffmanEncode.h"
 #include <bitset>
+
+#include "huffmanEncode.h"
+#include "bit_tool.hpp"
+
 using namespace std;
 
 huffmanEncode::huffmanEncode(u8 *src, size_t len):m_buf(src), m_len(len)
@@ -32,7 +35,7 @@ int huffmanEncode::createTree()
 {
     int validPos = 256;
     
-    LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, MUCHAR_MAX);
+    LLHeap<TreeNode*, compare1<TreeNode*>> mheap(m_pnode, MUCHAR_MAX + 1);
 
     TreeNode* firstNoZero = nullptr;
     do
@@ -87,20 +90,35 @@ int huffmanEncode::createTable()
     for (u32 i = 0; i < 256; i++)
     {
         pCurNode = m_node + i;
-        if (!pCurNode->parent)
+        if (nullptr != pCurNode->parent)
         {
-            continue;
+            do
+            {
+                m_table[i].value = ((m_table[i].value << 1) | pCurNode->bValue);
+                ++m_table[i].valueLen;
+                pCurNode = pCurNode->parent;
+                if (m_table[i].valueLen > sizeof(CodeVale) * 8)
+                {
+                    throw exception("encode value too long!");
+                }
+            } while (pCurNode->parent);
         }
-        u32 curBitPos = 0;
-        do
-        {
-            m_table[i].value = (m_table[i].value | (pCurNode->bValue << curBitPos++));
-            ++m_table[i].valueLen;
-            pCurNode = pCurNode->parent;
-        } while (pCurNode->parent);
-
     }
     return 0;
+}
+
+size_t huffmanEncode::writeCcompressData(u8* desBuf)
+{
+    CodeVale encodeValue = 0;
+
+    size_t totalBits = 0;
+
+    for (size_t i = 0; i < m_len; ++i)
+    {
+        TableElment& tbElement = m_table[*(m_buf+i)];
+        totalBits = writeNBitToBuf((CodeVale*)desBuf, totalBits, tbElement.value, tbElement.valueLen);
+    }
+    return totalBits;
 }
 
 void huffmanEncode::printTable()
@@ -118,5 +136,55 @@ void huffmanEncode::printTable()
     }
     //Average
     cout << "encode length:" << int(allBitLent/8) <<" origin len:" << m_len << endl;
-    printf("diff len:%d compress:%0.2f%\n", m_len - int(allBitLent / 8), (allBitLent / 8 / m_len));
+    printf("diff len:%d compress:%0.2f%%\n", m_len - int(allBitLent / 8), (allBitLent / 8 / m_len));
+}
+
+inline bool cmpCodeValueISEq(CodeVale lvalue, CodeVale rvalue, size_t len)
+{
+    bitset<sizeof(CodeVale)*8> lbs(lvalue);
+    bitset<sizeof(CodeVale)*8> rbs(rvalue);
+    size_t i = 0;
+    for (; i < len; i++)
+    {
+        if (lbs[i] != rbs[i])
+        {
+            break;
+        }
+    }
+    return (i == len);
+}
+
+int huffmanDecode(CodeVale* srcBuf, size_t totalBit, huffmanEncode::TableElment* huffmanTB, u8* destBuf)
+{
+    CodeVale encodeVale = 0;
+    size_t nStartBit = 0;
+
+    do {
+        encodeVale = getNBitFromBuf(srcBuf, nStartBit);
+        size_t i = 0;
+        for (; i < 256; i++)
+        {
+            if (0 != huffmanTB[i].valueLen)
+            {
+                if (cmpCodeValueISEq(encodeVale, huffmanTB[i].value, huffmanTB[i].valueLen)) 
+                {
+                    nStartBit += huffmanTB[i].valueLen;
+                    *destBuf++ = i;
+                    //cout << "origin:" << i << endl;
+                    break;
+                }
+            }
+        }
+        if (256 == i) 
+        {
+            cout << "decode error!" << endl;
+            return - 1;
+        }
+        //if (nStartBit %(1024*8) == 0)
+        //{
+        //    printf("%0.3fKB ", ((nStartBit / 8.0f) / 1024));
+        //}
+    } while (nStartBit < totalBit);
+
+    return 0;
 }

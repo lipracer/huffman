@@ -1,34 +1,43 @@
 #ifndef _BIT_TOOL_HPP_
 #define _BIT_TOOL_HPP_
+#include "llctype.h"
 
-
+//64 platform T=long long
+//32 platform T=int
 template <typename T>
-size_t writeNBit(T* src, size_t totalBit, T bits, size_t nBit)
+size_t writeNBitToBuf(T* desBuf, size_t totalBit, T bits, size_t nBit)
 {
     
-    size_t nInt_ = totalBit / sizeof(T);
-    size_t nBit_ = totalBit % sizeof(T);
-    
-    if(nInt_)
-    {
-        T* curPos = (src + nInt_);
-        T tmpBits = bits;
-        tmpBits >> (sizeof(T) - nBit_);
-        *(src + nInt_) = *(src + nInt_) | tmpBits;
-        if(nBit_ + nBit >= sizeof(T))
-        {
-            tmpBits = bits;
-            *(src + nInt_ + 1) = tmpBits << (sizeof(T) - nBit_);
-        }
-        
-    }
-    else
-    {
-        *(src + nInt_) = bits;
+    size_t nT_ = totalBit / (sizeof(T)*8);
+    size_t nOverflow = totalBit % (sizeof(T)*8);
+    T tmpBits = bits;
+
+    *(desBuf + nT_) |= (bits << nOverflow);
+
+    if(nBit + nOverflow > sizeof(T)*8)
+    {       
+        *(desBuf + nT_ + 1) = (tmpBits >> (sizeof(T)*8 - nOverflow));
     }
     
     return totalBit + nBit;
 }
 
+template <typename T>
+T getNBitFromBuf(T* srcBuf, size_t startBit)
+{
+
+    size_t nT_ = startBit / (sizeof(T)*8);
+    size_t nOverflow = startBit % (sizeof(T)*8);
+
+    T tmpData = 0;
+    tmpData = *(srcBuf + nT_) >> nOverflow;
+
+    if (0 != nOverflow)
+    {
+        tmpData |= (*(srcBuf + nT_ + 1) << (sizeof(T) * 8 - nOverflow));
+    }  
+
+    return tmpData;
+}
 
 #endif

@@ -10,9 +10,9 @@ typedef unsigned int CodeVale;
 struct TreeNode
 {
 	size_t freq;
+    u32 bValue;
+    u8 charValue;
     TreeNode* parent;
-    int bValue;
-	u8 charValue;
 };
 
 template<typename T>
@@ -35,7 +35,8 @@ struct compare2
 
 class huffmanEncode
 {
-	enum valueEnum
+public:
+    enum valueEnum
 	{
 		MUCHAR_MAX = 255,
         NodeCount = (256+1)*256/2
@@ -53,6 +54,7 @@ public:
     void calcuFre();
     int createTree();
     int createTable();
+    size_t writeCcompressData(u8* desBuf);
     void printTable();
 
 private:
@@ -60,8 +62,12 @@ private:
     size_t m_len;
     TreeNode m_node[NodeCount];
     TreeNode* m_pnode[NodeCount];
+
+public:
     TableElment m_table[256];   
 
 };
+
+int huffmanDecode(CodeVale* srcBuf, size_t totalBit, huffmanEncode::TableElment* huffmanTB, u8* destBuf);
 
 #endif
