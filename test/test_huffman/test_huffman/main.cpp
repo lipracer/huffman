@@ -22,48 +22,66 @@
 
 
 #define FILE_SRC "C:\\Users\\Lerlove\\Desktop\\huffman\\test.pdf"
-#define FILE_COM "C:\\Users\\Lerlove\\Desktop\\huffman\\test_.pdf"
-#define FILE_DES "C:\\Users\\Lerlove\\Desktop\\huffman\\test__.pdf"
+#define FILE_COM "./test_.png"
+#define FILE_DES "./test__.png"
 
 using namespace std;
 using namespace Huffman;
 
-int main()
+int parseCmdLine(int argc, char** argvs)
 {
-    // insert code here...
-    //test_heap();
-
-    u8* buf = nullptr;
-    int len = 0;
-
-    //getTestBuf(buf, len);
-    
-
-#if true
-    fstream fin(FILE_SRC, ios::binary | ios::in);
-
-    if (fin.is_open()) 
+    int ret = 0;
+    if(argc >= 3)
     {
- 
-        fin.seekg(0, ios::_Seekend);
-        len = fin.tellg();
-        fin.seekg(0, ios::_Seekbeg);
-
-        buf = new u8[len];
-        fin.read((char*)buf, len);
-        fin.close();
+        if(!strcmp("-c", argvs[1]))
+        {
+            //printf("curpath:%s file%s\n", argvs[0], argvs[2]);
+            u8* buf = nullptr;
+            int len = 0;
+            
+            fstream fin(argvs[2], ios::binary | ios::in);
+            if (fin.is_open())
+            {
+        
+                fin.seekg(0, fstream::end);
+                len = (int)fin.tellg();
+                fin.seekg(0, fstream::beg);
+        
+                buf = new u8[len];
+                fin.read((char*)buf, len);
+                fin.close();
+                
+                huffmanEncode he(buf, len);
+                he.calcuFre();
+                he.createTree();
+                he.createTable();
+                he.writeToFile(argvs[3]);
+                
+                delete buf;
+            }
+        }
+        else if(!strcmp("-u", argvs[1]))
+        {
+            //printf("curpath:%s file%s %s\n", argvs[0], argvs[2], argvs[3]);
+            huffmanDecodeFile(argvs[3], argvs[2]);
+        }
+        else
+        {
+            ret = -1;
+        }
     }
-#endif
+    else
+    {
+        ret = -1;
+    }
+    return ret;;
+}
 
+int main(int argc, char** argvs)
+{
 
-        //huffmanEncode he(buf, len);
-        //he.calcuFre();
-        //he.createTree();
-        //he.createTable();
-        //he.writeToFile(FILE_COM);
-        huffmanDecodeFile(FILE_DES, FILE_COM);
+    parseCmdLine(argc, argvs);
 
-        delete buf;
-    system("pause");
+    //huffmanDecodeFile(FILE_DES, FILE_COM);
     return 0;
 }

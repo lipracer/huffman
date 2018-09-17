@@ -100,7 +100,7 @@ namespace Huffman {
                     pCurNode = pCurNode->parent;
                     if (m_table[i].valueLen > sizeof(CodeVale) * 8)
                     {
-                        throw exception("encode value too long!");
+                        assert(false);
                     }
                 } while (pCurNode->parent);
             }
@@ -229,7 +229,7 @@ namespace Huffman {
 
         if (fin.is_open())
         {
-            fin.seekg(0, ios::_Seekend);
+            fin.seekg(0, fstream::end);
             u64 file_len = fin.tellg();
 
             //if (file_len <= sizeof(huffmanEncode::TableElment) * 256 + 8 + 8 + 4)
@@ -238,7 +238,7 @@ namespace Huffman {
             //    throw exception("not huffman encode file!");
             //}
 
-            fin.seekg(4, ios::_Seekbeg);
+            fin.seekg(4, fstream::beg);
 
             u64 originFileLen = 0;
             u64 nBits = 0;
