@@ -7,6 +7,12 @@
 
 namespace Huffman 
 {
+
+    enum class CorreValue : u64
+    {
+        Max_Buf = 1024ll,
+    };
+
     typedef unsigned int CodeVale;
 
     struct TreeNode
@@ -56,7 +62,7 @@ namespace Huffman
         void calcuFre();
         int createTree();
         int createTable();
-        u64 writeCcompressData(u8* desBuf);
+        u64 writeCcompressData(u8* desBuf, u32& over);
         int writeToFile(string filename);
 
         void printTable();

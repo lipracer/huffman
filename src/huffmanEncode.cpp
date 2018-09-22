@@ -1,8 +1,11 @@
+
 #include <bitset>
 #include <fstream>
 
 #include "huffmanEncode.h"
 #include "bit_tool.hpp"
+
+
 
 using namespace std;
 namespace Huffman {
@@ -45,6 +48,7 @@ namespace Huffman {
             firstNoZero = mheap.getExtremum();
             if (!mheap.size())
             {
+                mLog("%s", "heap error!");
                 return -1;
             }
         } while (!firstNoZero->freq);
@@ -100,7 +104,8 @@ namespace Huffman {
                     pCurNode = pCurNode->parent;
                     if (m_table[i].valueLen > sizeof(CodeVale) * 8)
                     {
-                        assert(false);
+                        mLog("%s", "too long encode!!");
+                        throw exception("too long encode!");
                     }
                 } while (pCurNode->parent);
             }
@@ -108,7 +113,7 @@ namespace Huffman {
         return 0;
     }
 
-    u64 huffmanEncode::writeCcompressData(u8* desBuf)
+    u64 huffmanEncode::writeCcompressData(u8* desBuf, u32& over)
     {
         CodeVale encodeValue = 0;
 
@@ -117,6 +122,9 @@ namespace Huffman {
         for (size_t i = 0; i < m_len; ++i)
         {
             TableElment& tbElement = m_table[*(m_buf + i)];
+            if () 
+            {
+            }
             totalBits = writeNBitToBuf((CodeVale*)desBuf, totalBits, tbElement.value, tbElement.valueLen);
         }
         return totalBits;
@@ -129,10 +137,17 @@ namespace Huffman {
 
         if (fout.is_open())
         {
-            u8 *dest = new u8[m_len];
-            memset(dest, 0, m_len);
+            u64 nBuf = (u64)CorreValue::Max_Buf;
+            if (m_len < (u64)CorreValue::Max_Buf)
+            {
+                nBuf = m_len;
+            }
+            u8 *dest = new u8[nBuf];
+            memset(dest, 0, nBuf);
 
-            u64 totalBits = writeCcompressData(dest);
+            u64 totalBits = 0;
+            u32 over = 0;
+            totalBits += writeCcompressData(dest, over);
 
             fout << "HFLL";
             fout.write((char*)&m_len, 8);

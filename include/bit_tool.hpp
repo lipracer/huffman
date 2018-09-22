@@ -1,9 +1,14 @@
 #ifndef _BIT_TOOL_HPP_
 #define _BIT_TOOL_HPP_
+
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "llctype.h"
+#include <sstream>
+#include <iostream>
 
 //64 platform T=long long
-//32 platform T=int
+//32 platform T=int 
 template <typename T>
 u64 writeNBitToBuf(T* desBuf, u64 totalBit, T bits, size_t nBit)
 {
@@ -39,5 +44,39 @@ T getNBitFromBuf(T* srcBuf, u64 startBit)
 
     return tmpData;
 }
+
+template<typename T>
+void mformat(char* buf, const char* strfmt, T first)
+{
+    sprintf(buf, strfmt, first);
+}
+
+template<typename T, typename ... ARGVS>
+void mformat(char* buf, const char* strfmt, T first, ARGVS... argvs) 
+{    
+    sprintf(buf, strfmt, first);
+    mformat(buf + strlen(buf), buf, argvs...);
+  
+}
+
+template<typename T>
+void mLog(T strfmt)
+{
+    std::cout << strfmt << std::endl;
+}
+
+template<typename T, typename ... ARGVS>
+void mLog(T strfmt, ARGVS... argvs)
+{
+    //char buf[1024] = { 0 };
+    //mformat(buf, strfmt, argvs...);
+    //std::cout << buf << std::endl;
+    std::cout << strfmt << std::endl;
+    mLog(argvs...);
+}
+
+
+
+
 
 #endif
