@@ -4,6 +4,7 @@
 
 #include "llctype.h"
 #include "heap.hpp"
+#include "big_buf.hpp"
 
 namespace Huffman 
 {

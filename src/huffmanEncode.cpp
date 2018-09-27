@@ -100,7 +100,7 @@ namespace Huffman {
                     pCurNode = pCurNode->parent;
                     if (m_table[i].valueLen > sizeof(CodeVale) * 8)
                     {
-                        assert(false);
+                        //assert(false);
                     }
                 } while (pCurNode->parent);
             }
