@@ -6,6 +6,29 @@
 
 using namespace std;
 namespace Huffman {
+    
+    huffmanEncode::huffmanEncode(string filename)
+    {
+        
+        fstream fin(filename, ios::binary | ios::in);
+        if (fin.is_open())
+        {
+            
+            fin.seekg(0, fstream::end);
+            m_len = (int)fin.tellg();
+            fin.seekg(0, fstream::beg);
+            
+            m_buf = new u8[m_len];
+            fin.read((char*)m_buf, m_len);
+            fin.close();
+        }
+        else
+        {
+            m_len = 0;
+            m_buf = nullptr;
+        }
+        
+    }
 
     huffmanEncode::huffmanEncode(u8 *src, size_t len) :m_buf(src), m_len(len)
     {

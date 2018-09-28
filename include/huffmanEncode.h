@@ -5,6 +5,7 @@
 #include "llctype.h"
 #include "heap.hpp"
 #include "big_buf.hpp"
+#include <string>
 
 namespace Huffman 
 {
@@ -52,6 +53,7 @@ namespace Huffman
         };
 
     public:
+        huffmanEncode(string filename);
         huffmanEncode(u8 *src, size_t len);
         ~huffmanEncode();
         void calcuFre();
