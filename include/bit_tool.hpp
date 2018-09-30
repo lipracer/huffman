@@ -5,21 +5,18 @@
 //64 platform T=long long
 //32 platform T=int
 template <typename T>
-u64 writeNBitToBuf(T* desBuf, u64 totalBit, T bits, size_t nBit)
-{
-    
-    size_t nT_ = totalBit / (sizeof(T)*8);
-    size_t nOverflow = totalBit % (sizeof(T)*8);
-    T tmpBits = bits;
+u64 writeNBitToBuf(T* desBuf, u64 nOverflow, u64 totalBits, T bits, size_t nBit)
+{    
 
-    *(desBuf + nT_) |= (bits << nOverflow);
+    *(desBuf) |= (bits << nOverflow);
 
     if(nBit + nOverflow > sizeof(T)*8)
-    {       
-        *(desBuf + nT_ + 1) = (tmpBits >> (sizeof(T)*8 - nOverflow));
+    {    
+        T tmpBits = bits;
+        *(desBuf + 1) = (tmpBits >> (sizeof(T)*8 - nOverflow));
     }
     
-    return totalBit + nBit;
+    return totalBits + nBit;
 }
 
 template <typename T>

@@ -54,11 +54,12 @@ namespace Huffman
         };
 
     public:
-        huffmanEncode(string filename);
+        huffmanEncode();
         huffmanEncode(u8 *src, size_t len);
+        ~huffmanEncode();
         int InitRes(string filename);
         void ReleaseRes();
-        ~huffmanEncode();
+        
         void calcuFre();
         void calcuFreForBigFile();
         int createTree();
@@ -69,7 +70,7 @@ namespace Huffman
 
         void printTable();
     private:
-        void TraverseData(function<void(u8)> func);
+        void TraverseData(const function<void(u8)>& func);
 
     private:
         u8 * m_buf;

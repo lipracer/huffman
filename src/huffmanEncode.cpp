@@ -7,7 +7,7 @@
 using namespace std;
 namespace Huffman {
 
-    huffmanEncode::huffmanEncode(u8 *src, size_t len) :m_buf(src), m_len(len)
+    huffmanEncode::huffmanEncode() 
     {
         memset(m_node, 0, sizeof(m_node));
         memset(m_table, 0, sizeof(m_table));
@@ -15,6 +15,12 @@ namespace Huffman {
         {
             m_pnode[i] = m_node + i;
         }
+    }
+
+    huffmanEncode::huffmanEncode(u8 *src, size_t len) : huffmanEncode()
+    {
+        m_buf = src;
+        m_len = len;
     }
 
 
@@ -26,13 +32,13 @@ namespace Huffman {
     int huffmanEncode::InitRes(string filename)
     {
         int err_code = 0;
-        fstream fin(filename, ios::binary | ios::in);
-        if (fin.is_open())
+        m_fin.open(filename, ios::binary | ios::in);
+        if (m_fin.is_open())
         {
 
-            fin.seekg(0, fstream::end);
-            m_len = fin.tellg();
-            fin.seekg(0, fstream::beg);
+            m_fin.seekg(0, fstream::end);
+            m_len = m_fin.tellg();
+            m_fin.seekg(0, fstream::beg);
             m_buf = new u8[MaxBufSize];
 
         }
@@ -51,7 +57,7 @@ namespace Huffman {
         m_fin.close();
     }
 
-    void huffmanEncode::TraverseData(function<void(u8)> func)
+    void huffmanEncode::TraverseData(const function<void(u8)>& func)
     {
         int64 remain_count = m_len;
         while (remain_count / MaxBufSize)
@@ -82,10 +88,11 @@ namespace Huffman {
 
     int huffmanEncode::writeCcompressData(const char* filename)
     {
-        u8 *desBuf = new u8[MaxBufSize];
+        u8 *desBuf = new u8[MaxBufSize + sizeof(CodeVale)];
+        memset(desBuf, 0, (MaxBufSize + sizeof(CodeVale)));
         int64 totalBits = 0;
 
-        fstream fout(filename, ios::binary | ios::out | ios::in);
+        fstream fout(filename, ios::binary | ios::out);
 
         fout << "HFLL";
         fout.write((char*)&m_len, 8);
@@ -93,17 +100,47 @@ namespace Huffman {
         fout.write((char*)m_table, sizeof(m_table));
 
 
-        auto func = [this, desBuf, &totalBits](u8 data)->void
+        auto func = [this, desBuf, &totalBits, &fout](u8 data)->void
         {
             TableElment& tbElement = m_table[data];
-            totalBits = writeNBitToBuf((CodeVale*)desBuf, totalBits, tbElement.value, tbElement.valueLen);
+            size_t nT_ = totalBits / (sizeof(CodeVale) * 8);
+            size_t nOverflow = totalBits % (sizeof(CodeVale) * 8);
+            u8* temp_buf = desBuf + nT_ % MaxBufSize;
+            totalBits = writeNBitToBuf((CodeVale*)temp_buf, nOverflow, totalBits, tbElement.value, tbElement.valueLen);
+            
             //TOTO loop write to file
+            if (totalBits >> 10)
+            {
+                fout.write((char*)desBuf, MaxBufSize);                
+
+                CodeVale temp_ = *(CodeVale*)(temp_buf + MaxBufSize);
+                memset(desBuf, 0, (MaxBufSize + sizeof(CodeVale)));
+
+                *(CodeVale*)desBuf = temp_;
+            }
+           
         };
         m_fin.seekg(0, fstream::beg);
         TraverseData(func);
+        //write remain data
 
-        m_fin.seekp(8, fstream::beg);
-        m_fin.write((char*)&totalBits, 8);
+        u64 remainBits = totalBits % (1024<<3);
+        u64 nBytes = remainBits / 8;
+        if (0 != remainBits % 8)
+        {
+            ++nBytes;
+        }
+
+        fout.write((char*)desBuf, nBytes);
+        fout.flush();
+        fout.close();
+        delete desBuf;
+
+        fout.open(filename, ios::binary | ios::out | ios::in);
+        fout.seekp(12, fstream::beg);
+        fout.write((char*)&totalBits, 8);
+        //fout.write("12345678", 8);
+        fout.close();
 
         return 0;
     }
@@ -199,10 +236,14 @@ namespace Huffman {
 
         u64 totalBits = 0;
         u8* cur = m_buf;
+        size_t nT_ = 0;
+        size_t nOverflow = 0;
         for (size_t i = 0; i < m_len; ++i)
         {
             TableElment& tbElement = m_table[*cur++];
-            totalBits = writeNBitToBuf((CodeVale*)desBuf, totalBits, tbElement.value, tbElement.valueLen);
+            nT_ = totalBits / (sizeof(CodeVale)*8);
+            nOverflow = totalBits % (sizeof(CodeVale)*8);
+            totalBits = writeNBitToBuf((CodeVale*)(desBuf + nT_), nOverflow, totalBits, tbElement.value, tbElement.valueLen);
         }
         return totalBits;
     }
