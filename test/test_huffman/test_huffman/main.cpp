@@ -77,11 +77,37 @@ int parseCmdLine(int argc, char** argvs)
     return ret;;
 }
 
+class RBigBuf
+{
+public:
+    u8* m_src;
+    u8 operator*()
+    {
+        return *m_src;
+    }
+};
+
 int main(int argc, char** argvs)
 {
+    fstream m_fin;
+    m_fin.open("C:\\Users\\Lerlove\\Desktop\\huffman\\test.txt", ios::binary | ios::out | ios::in);
+    u8 *m_buf;
+    if (m_fin.is_open())
+    {
 
-    parseCmdLine(argc, argvs);
+        m_fin.seekg(0, fstream::end);
+        int m_buf_len = m_fin.tellg();
+        m_fin.seekg(0, fstream::beg);
+        m_fin.seekp(1, fstream::beg);
+        char data = 'Y';
+        m_fin.write(&data, 1);
+        m_fin.close();
+
+    }
+
+    //parseCmdLine(argc, argvs);
 
     //huffmanDecodeFile(FILE_DES, FILE_COM);
+    system("pause");
     return 0;
 }

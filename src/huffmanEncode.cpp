@@ -6,29 +6,6 @@
 
 using namespace std;
 namespace Huffman {
-    
-    huffmanEncode::huffmanEncode(string filename)
-    {
-        
-        fstream fin(filename, ios::binary | ios::in);
-        if (fin.is_open())
-        {
-            
-            fin.seekg(0, fstream::end);
-            m_len = (int)fin.tellg();
-            fin.seekg(0, fstream::beg);
-            
-            m_buf = new u8[m_len];
-            fin.read((char*)m_buf, m_len);
-            fin.close();
-        }
-        else
-        {
-            m_len = 0;
-            m_buf = nullptr;
-        }
-        
-    }
 
     huffmanEncode::huffmanEncode(u8 *src, size_t len) :m_buf(src), m_len(len)
     {
@@ -46,11 +23,96 @@ namespace Huffman {
 
     }
 
+    int huffmanEncode::InitRes(string filename)
+    {
+        int err_code = 0;
+        fstream fin(filename, ios::binary | ios::in);
+        if (fin.is_open())
+        {
+
+            fin.seekg(0, fstream::end);
+            m_len = fin.tellg();
+            fin.seekg(0, fstream::beg);
+            m_buf = new u8[MaxBufSize];
+
+        }
+        else
+        {
+            m_len = 0;
+            m_buf = nullptr;
+            err_code = -1;
+        }
+        return err_code;
+    }
+
+    void huffmanEncode::ReleaseRes() 
+    {
+        delete m_buf;
+        m_fin.close();
+    }
+
+    void huffmanEncode::TraverseData(function<void(u8)> func)
+    {
+        int64 remain_count = m_len;
+        while (remain_count / MaxBufSize)
+        {
+            remain_count = remain_count - MaxBufSize;
+            m_fin.read((char*)m_buf, MaxBufSize);
+
+            for (size_t i = 0; i < MaxBufSize; i++)
+            {
+                func(*(m_buf+i));
+            }
+        }
+        m_fin.read((char*)m_buf, remain_count);
+        for (size_t i = 0; i < remain_count; i++)
+        {
+            func(*(m_buf + i));
+        }
+    }
+
+    void huffmanEncode::calcuFreForBigFile()
+    {
+        auto func = [this](u8 data)->void 
+        {
+            m_node[data].freq++;
+        };
+        TraverseData(func);
+    }
+
+    int huffmanEncode::writeCcompressData(const char* filename)
+    {
+        u8 *desBuf = new u8[MaxBufSize];
+        int64 totalBits = 0;
+
+        fstream fout(filename, ios::binary | ios::out | ios::in);
+
+        fout << "HFLL";
+        fout.write((char*)&m_len, 8);
+        fout.write((char*)&totalBits, 8);
+        fout.write((char*)m_table, sizeof(m_table));
+
+
+        auto func = [this, desBuf, &totalBits](u8 data)->void
+        {
+            TableElment& tbElement = m_table[data];
+            totalBits = writeNBitToBuf((CodeVale*)desBuf, totalBits, tbElement.value, tbElement.valueLen);
+            //TOTO loop write to file
+        };
+        m_fin.seekg(0, fstream::beg);
+        TraverseData(func);
+
+        m_fin.seekp(8, fstream::beg);
+        m_fin.write((char*)&totalBits, 8);
+
+        return 0;
+    }
+
     void huffmanEncode::calcuFre()
     {
-        u8 *end = m_buf + m_len;
-
-        for (u8 *cur = m_buf; cur != end;)
+        u64 len =  m_len;
+        u8 *cur = m_buf;
+        while (0 != len--)
         {
             m_node[*cur++].freq++;
         }
@@ -136,10 +198,10 @@ namespace Huffman {
         CodeVale encodeValue = 0;
 
         u64 totalBits = 0;
-
+        u8* cur = m_buf;
         for (size_t i = 0; i < m_len; ++i)
         {
-            TableElment& tbElement = m_table[*(m_buf + i)];
+            TableElment& tbElement = m_table[*cur++];
             totalBits = writeNBitToBuf((CodeVale*)desBuf, totalBits, tbElement.value, tbElement.valueLen);
         }
         return totalBits;

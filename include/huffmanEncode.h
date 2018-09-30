@@ -6,6 +6,7 @@
 #include "heap.hpp"
 #include "big_buf.hpp"
 #include <string>
+#include <functional>
 
 namespace Huffman 
 {
@@ -55,20 +56,27 @@ namespace Huffman
     public:
         huffmanEncode(string filename);
         huffmanEncode(u8 *src, size_t len);
+        int InitRes(string filename);
+        void ReleaseRes();
         ~huffmanEncode();
         void calcuFre();
+        void calcuFreForBigFile();
         int createTree();
         int createTable();
         u64 writeCcompressData(u8* desBuf);
+        int writeCcompressData(const char* filename);
         int writeToFile(string filename);
 
         void printTable();
+    private:
+        void TraverseData(function<void(u8)> func);
 
     private:
         u8 * m_buf;
-        u64 m_len;
+        int64 m_len;
         TreeNode m_node[NodeCount];
         TreeNode* m_pnode[NodeCount];
+        fstream m_fin;
 
     public:
         TableElment m_table[256];
