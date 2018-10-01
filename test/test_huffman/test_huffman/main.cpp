@@ -21,9 +21,9 @@
 #include "huffmanEncode.h"
 
 
-#define FILE_SRC "C:\\Users\\Lerlove\\Desktop\\huffman\\test.txt"
-#define FILE_COM "C:\\Users\\Lerlove\\Desktop\\huffman\\test_.txt"
-#define FILE_DES "C:\\Users\\Lerlove\\Desktop\\huffman\\test__.txt"
+#define FILE_SRC "C:\\Users\\Lerlove\\Desktop\\huffman\\star.bmp"
+#define FILE_COM "C:\\Users\\Lerlove\\Desktop\\huffman\\_star.bmp"
+#define FILE_DES "C:\\Users\\Lerlove\\Desktop\\huffman\\__star.bmp"
 
 using namespace std;
 using namespace Huffman;
@@ -80,17 +80,41 @@ int parseCmdLine(int argc, char** argvs)
 int main(int argc, char** argvs)
 {
     //parseCmdLine(argc, argvs);
+    //u8* buf = nullptr;
+    //int len = 0;
+    //fstream fin(FILE_SRC, ios::binary | ios::in);
+    //if (fin.is_open())
+    //{
 
-    //huffmanDecodeFile(FILE_DES, FILE_COM);
+    //    fin.seekg(0, fstream::end);
+    //    len = (int)fin.tellg();
+    //    fin.seekg(0, fstream::beg);
+
+    //    buf = new u8[len];
+    //    fin.read((char*)buf, len);
+    //    fin.close();
+
+    //    huffmanEncode he(buf, len);
+    //    he.calcuFre();
+    //    he.createTree();
+    //    he.createTable();
+    //    he.writeToFile(FILE_COM);
+
+    //    delete buf;
+    //}
+
     huffmanEncode he;
     if (!he.InitRes(FILE_SRC))
     {
         he.calcuFreForBigFile();
         he.createTree();
         he.createTable();
+
         he.writeCcompressData(FILE_COM);
+
         he.ReleaseRes();
     }
+
     huffmanDecodeFile(FILE_DES, FILE_COM);
 
     system("pause");

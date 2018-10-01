@@ -8,9 +8,16 @@
 #include <string>
 #include <functional>
 
-namespace Huffman 
+namespace Huffman
 {
     typedef unsigned int CodeVale;
+
+    enum hf_status : int
+    {
+        file_open_fail = 0,
+        heap_error,
+        hfcode_too_long
+    };
 
     struct TreeNode
     {

@@ -46,7 +46,7 @@ namespace Huffman {
         {
             m_len = 0;
             m_buf = nullptr;
-            err_code = -1;
+            err_code = hf_status::file_open_fail;
         }
         return err_code;
     }
@@ -88,8 +88,10 @@ namespace Huffman {
 
     int huffmanEncode::writeCcompressData(const char* filename)
     {
-        u8 *desBuf = new u8[MaxBufSize + sizeof(CodeVale)];
-        memset(desBuf, 0, (MaxBufSize + sizeof(CodeVale)));
+        //u8 *desBuf = new u8[MaxBufSize + sizeof(CodeVale)];
+        u8 *desBuf = new u8[m_len];
+        //memset(desBuf, 0, MaxBufSize + sizeof(CodeVale));
+        memset(desBuf, 0, m_len);
         int64 totalBits = 0;
 
         fstream fout(filename, ios::binary | ios::out);
@@ -99,34 +101,41 @@ namespace Huffman {
         fout.write((char*)&totalBits, 8);
         fout.write((char*)m_table, sizeof(m_table));
 
-
         auto func = [this, desBuf, &totalBits, &fout](u8 data)->void
         {
             TableElment& tbElement = m_table[data];
-            size_t nT_ = totalBits / (sizeof(CodeVale) * 8);
+            size_t nT_ = (totalBits / 32) * 4;
+            //nT_ = nT_ % MaxBufSize;
             size_t nOverflow = totalBits % (sizeof(CodeVale) * 8);
-            u8* temp_buf = desBuf + nT_ % MaxBufSize;
-            totalBits = writeNBitToBuf((CodeVale*)temp_buf, nOverflow, totalBits, tbElement.value, tbElement.valueLen);
-            
-            //TOTO loop write to file
-            if (totalBits >> 10)
-            {
-                fout.write((char*)desBuf, MaxBufSize);                
 
-                CodeVale temp_ = *(CodeVale*)(temp_buf + MaxBufSize);
-                memset(desBuf, 0, (MaxBufSize + sizeof(CodeVale)));
+            writeNBitToBuf((CodeVale*)(desBuf + nT_), nOverflow, tbElement.value, tbElement.valueLen);
+            totalBits += tbElement.valueLen;
 
-                *(CodeVale*)desBuf = temp_;
-            }
+            //if ((nT_ == 1020) && (nOverflow + tbElement.valueLen >= 32))
+            //{                    
+            //    fout.write((char*)desBuf, MaxBufSize);
+
+            //    CodeVale temp_ = *(desBuf + MaxBufSize);
+            //    memset(desBuf, 0, (MaxBufSize + sizeof(CodeVale)));
+
+            //    *(CodeVale*)desBuf = temp_;
+            //}
            
         };
         m_fin.seekg(0, fstream::beg);
         TraverseData(func);
+
         //write remain data
 
-        u64 remainBits = totalBits % (1024<<3);
-        u64 nBytes = remainBits / 8;
-        if (0 != remainBits % 8)
+        //u64 remainBits = totalBits % (MaxBufSize << 3);
+        //u64 nBytes = remainBits / 8;
+        //if (0 != remainBits % 8)
+        //{
+        //    ++nBytes;
+        //}
+
+        u64 nBytes = totalBits / 8;
+        if (0 != totalBits % 8)
         {
             ++nBytes;
         }
@@ -241,9 +250,10 @@ namespace Huffman {
         for (size_t i = 0; i < m_len; ++i)
         {
             TableElment& tbElement = m_table[*cur++];
-            nT_ = totalBits / (sizeof(CodeVale)*8);
+            nT_ = (totalBits / 32) * 4;
             nOverflow = totalBits % (sizeof(CodeVale)*8);
-            totalBits = writeNBitToBuf((CodeVale*)(desBuf + nT_), nOverflow, totalBits, tbElement.value, tbElement.valueLen);
+            writeNBitToBuf((CodeVale*)(desBuf + nT_), nOverflow, tbElement.value, tbElement.valueLen);
+            totalBits += tbElement.valueLen;
         }
         return totalBits;
     }
@@ -380,10 +390,10 @@ namespace Huffman {
                 ++nByte;
             }
             u8 *srcBuf = new u8[nByte];
-            u8 *destBuf = new u8[originFileLen];
+            u8 *destBuf = new u8[originFileLen+100];
 
             memset(srcBuf, 0, nByte);
-            memset(destBuf, 0, originFileLen);
+            memset(destBuf, 0, originFileLen + 100);
 
             fin.read((char*)srcBuf, nByte);
 
@@ -393,10 +403,12 @@ namespace Huffman {
             fstream fout(destfilename, ios::binary | ios::out);
             fout.write((char*)destBuf, originFileLen);
 
+            fin.close();
+            fout.close();
+
             delete srcBuf;
             delete destBuf;
-
-            fin.close();
+            
         }
 
         return retCode;
