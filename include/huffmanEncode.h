@@ -78,6 +78,7 @@ namespace Huffman
         void printTable();
     private:
         void TraverseData(const function<void(u8)>& func);
+        inline void check_buf_overflow(u64 totalbit);
 
     private:
         u8 * m_buf;

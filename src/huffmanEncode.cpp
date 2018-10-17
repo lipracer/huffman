@@ -26,7 +26,7 @@ namespace Huffman {
 
     huffmanEncode::~huffmanEncode()
     {
-
+        //delete buf
     }
 
     int huffmanEncode::InitRes(string filename)
@@ -85,6 +85,22 @@ namespace Huffman {
         };
         TraverseData(func);
     }
+    
+    inline void huffmanEncode::check_buf_overflow(u64 totalbit)
+    {
+        static u64 writed_count = 0;
+        static u64 max_bit_size = MaxBufSize << 3;//MaxBufSize * 8
+        if(totalbit > max_bit_size) //totalbit == max_bit_size no process encode len less eccodevalue size
+        {
+            writed_count += max_bit_size;
+            //write to file
+            //TODO
+            //
+            //
+            *((CodeVale*)m_buf) = *((CodeVale*)(m_buf + MaxBufSize));
+            memset(m_buf, 0, MaxBufSize + sizeof(CodeVale));
+        }
+    }
 
     int huffmanEncode::writeCcompressData(const char* filename)
     {
@@ -111,6 +127,7 @@ namespace Huffman {
             writeNBitToBuf((CodeVale*)(desBuf + nT_), nOverflow, tbElement.value, tbElement.valueLen);
             totalBits += tbElement.valueLen;
 
+            //check_buf_overflow(totalBits);
             //if ((nT_ == 1020) && (nOverflow + tbElement.valueLen >= 32))
             //{                    
             //    fout.write((char*)desBuf, MaxBufSize);
